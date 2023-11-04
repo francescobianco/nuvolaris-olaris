@@ -34,13 +34,17 @@ tasks:
     cmds:
       - curl -L "{{.CERTMANAGER}}" >cert-manager.yaml
 
+  restorecon:
+    cmds:
+
   install:
     silent: true
     #desc: install k3s with ssh in SERVER=<server> using USERNAME=<user> with sudo
     cmds:
       - test -n "{{.SERVER}}" || die "required SERVER=<ip or host>"
+      - sudo apt-get update ; apt-get install -y policycoreutil 
       - >
-        k3sup install
+        k3sup install --k3s-channel=stable
         --host="{{.SERVER}}" --user="{{.USERNAME}}"
         --local-path=$NUV_TMP/kubeconfig
     vars:
